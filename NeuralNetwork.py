@@ -21,12 +21,16 @@ import imageio
 
 
 # Read in spectrogram data from pngs
-
 def get_data():
-    x = []
-    validation = []
+    n_files = 2400
 
-    for i in range(2400):
+    x = []
+    x_val = []
+    y = []
+    y_val = []
+
+    class_num = 0
+    for i in range(n_files):
         print("Reading image", (i+1))
         file = f"Spectrograms/{i+1}.png"
         img = io.imread(file, as_gray=True)
@@ -34,31 +38,30 @@ def get_data():
         #Get rid of extra pixels
         img = img[60:426,81:575]
 
-        if i % 2 == 0:
-            x.append(img)
+        #Split data for validation
+        if i % 4 == 0:
+            x_val.append(img)
+            y_val.append(class_num)
         else:
-            validation.append(img)
-    
-    #Manually create array of classes
-    y = []
-    y.extend(np.zeros(200))
-    y.extend(np.ones(200))
-    y.extend((np.ones(200) * 2))
-    y.extend((np.ones(200) * 3))
-    y.extend((np.ones(200) * 4))
-    y.extend((np.ones(200) * 5))
+            x.append(img)
+            y.append(class_num)
 
-    return x, validation, y, y
+        if (i+1) % (600) == 0:
+            class_num += 1
+
+    return x, x_val, y, y_val
 
 
 def train(x_data, x_valid, y_data, y_valid):
     #Create model
     model = keras.models.Sequential()
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
-    model.add(keras.layers.Dense(300, activation="relu"))
-    model.add(keras.layers.Dense(100, activation="relu"))
-    model.add(keras.layers.Dense(300, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="softmax"))
+    model.add(keras.layers.Dense(400, activation="relu"))
+    model.add(keras.layers.Dense(200, activation="relu"))
+    model.add(keras.layers.Dense(400, activation="relu"))
+    #model.add(keras.layers.Dense(30, activation="relu"))
+    #model.add(keras.layers.Dense(20, activation="relu"))
+    model.add(keras.layers.Dense(6, activation="softmax"))
 
     model.summary()
 
@@ -73,7 +76,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=50, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=30, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
