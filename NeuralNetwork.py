@@ -1,7 +1,7 @@
 import sys
 
 import sklearn
-
+from sklearn import preprocessing
 import tensorflow
 
 from tensorflow import keras
@@ -37,7 +37,7 @@ def get_data():
 
         #Get rid of extra pixels
         img = img[60:426,81:575]
-
+        #preprocessing.normalize(img, norm='l2')
         #Split data for validation
         if i % 4 == 0:
             x_val.append(img)
@@ -54,7 +54,9 @@ def get_data():
 
 def train(x_data, x_valid, y_data, y_valid):
     #Create model
+
     model = keras.models.Sequential()
+
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
     model.add(keras.layers.Dense(300, activation="relu"))
     model.add(keras.layers.Dense(100, activation="relu"))
