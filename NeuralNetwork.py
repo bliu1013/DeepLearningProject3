@@ -1,38 +1,33 @@
 import sys
+import csv
 
 import sklearn
 from sklearn import preprocessing
+
 import tensorflow
 
 from tensorflow import keras
-
 from skimage import io
 
-
 import numpy as np
-
 import matplotlib.pyplot as plt
 import pandas as pd
-
 
 import librosa
 import imageio
 
 
-
 # Read in spectrogram data from pngs
 def get_data():
-    n_files = 2400
-
     x = []
     x_val = []
     y = []
     y_val = []
 
     class_num = 0
-    for i in range(n_files):
-        print("Reading image", (i+1))
-        file = f"Spectrograms/{i+1}.png"
+    for i in range(1, 2401):
+        print("Reading image", (i))
+        file = f"Spectrograms/{i}.png"
         img = io.imread(file, as_gray=True)
 
         #Get rid of extra pixels
@@ -59,10 +54,17 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
     model.add(keras.layers.Dense(300, activation="relu"))
-    model.add(keras.layers.Dense(100, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
+    model.add(keras.layers.Dense(10, activation="relu"))
     model.add(keras.layers.Dense(300, activation="relu"))
-    #model.add(keras.layers.Dense(30, activation="relu"))
-    #model.add(keras.layers.Dense(20, activation="relu"))
     model.add(keras.layers.Dense(6, activation="softmax"))
 
     model.summary()
@@ -78,7 +80,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=30, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=5, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
@@ -87,24 +89,42 @@ def train(x_data, x_valid, y_data, y_valid):
 
 
 def test(model):
+    #Get test example indices
+    indices = []
+    with open('test_idx.csv') as file:
+        reader = csv.reader(file)
+
+        for idx in reader:
+            if idx != 'new_id':
+                indices.append(idx)
+
     x = []
-    n_files = 2400
-    for i in range(n_files):
-        print("Testing image", (i+1))
-        file = f"Spectrograms/{i+1}.png"
+    for i in range(1, 1201):
+        print("Testing image", (i))
+        file = f"test_spec/{i}.png"
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
     
+    x = np.asarray(x)
     y_pred = np.argmax(model.predict(x), axis=-1)
 
-    print(y_pred)
+    #print(y_pred)
+
+    with open('solution.csv', 'w+') as out:
+        writer = csv.writer(out)
+        writer.writerow('id,genre')
+        for i in range(1200):
+            writer.writerow(f'[{indices[i]}],[{y_pred[i]}]')
 
 
 if __name__ == "__main__":
     x_data, x_valid, y_data, y_valid = get_data()
-    #print(np.shape(x_data), y_data)
 
     model = train(x_data, x_valid, y_data, y_valid)
 
-    test(model)
+    #Prompt to continue to testing
+    if input("Continue to test? (y/n)\n") == 'y':
+        test(model)
+
+    
