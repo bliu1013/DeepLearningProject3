@@ -1,9 +1,6 @@
 import sys
 import csv
 
-import sklearn
-import tensorflow
-
 from tensorflow import keras
 from skimage import io
 
@@ -11,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import librosa
 import imageio
 
 
@@ -29,17 +25,17 @@ def get_data():
         img = io.imread(file, as_gray=True)
 
         #Get rid of extra pixels
-        img = img[60:426,81:575]
+        img = img[60:426,81:575] / 255.
 
         #Split data for validation
-        if i % 4 == 0:
+        if i % 10 == 0:
             x_val.append(img)
             y_val.append(class_num)
         else:
             x.append(img)
             y.append(class_num)
 
-        if (i+1) % (600) == 0:
+        if i % 400 == 0:
             class_num += 1
 
     return x, x_val, y, y_val
@@ -49,24 +45,16 @@ def train(x_data, x_valid, y_data, y_valid):
     #Create model
     model = keras.models.Sequential()
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
-    model.add(keras.layers.Dense(300, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(10, activation="relu"))
-    model.add(keras.layers.Dense(300, activation="relu"))
+    model.add(keras.layers.Dense(100, activation="relu"))
+    model.add(keras.layers.Dense(50, activation="relu"))
+    model.add(keras.layers.Dense(100, activation="relu"))
     model.add(keras.layers.Dense(6, activation="softmax"))
 
     model.summary()
 
+    optimizer = keras.optimizers.SGD(learning_rate=0.05)
     model.compile(loss="sparse_categorical_crossentropy",
-                  optimizer="sgd",
+                  optimizer=optimizer,
                   metrics=["accuracy"])  
 
     #Convert all lists to nparrays
@@ -76,7 +64,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=5, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=30, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
@@ -91,7 +79,7 @@ def test(model):
         reader = csv.reader(file)
 
         for idx in reader:
-            if idx != 'new_id':
+            if idx != ['new_id']:
                 indices.append(idx)
 
     x = []
@@ -99,7 +87,7 @@ def test(model):
         print("Testing image", (i))
         file = f"test_spec/{i}.png"
         img = io.imread(file, as_gray=True)
-        img = img[60:426,81:575]
+        img = img[60:426,81:575] / 255.
         x.append(img)
     
     x = np.asarray(x)
@@ -107,11 +95,11 @@ def test(model):
 
     #print(y_pred)
 
-    with open('solution.csv', 'w+') as out:
+    with open('solution.csv', 'w+', newline='') as out:
         writer = csv.writer(out)
-        writer.writerow('id,genre')
+        writer.writerow(['id' , 'genre'])
         for i in range(1200):
-            writer.writerow(f'[{indices[i]}],[{y_pred[i]}]')
+            writer.writerow([indices[i][0], y_pred[i]])
 
 
 if __name__ == "__main__":
@@ -120,7 +108,13 @@ if __name__ == "__main__":
     model = train(x_data, x_valid, y_data, y_valid)
 
     #Prompt to continue to testing
-    if input("Continue to test? (y/n)\n") == 'y':
-        test(model)
+    while True:
+        text = input("Continue to test? (y/n)\n")
+
+        if text == 'y':
+            test(model)
+            break
+        elif text == 'n':
+            break
 
     
