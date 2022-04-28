@@ -12,6 +12,7 @@ import sklearn.utils, sklearn.preprocessing, sklearn.decomposition, sklearn.svm
 import librosa
 import librosa.display
 from joblib import Parallel,delayed
+from sklearn.model_selection import train_test_split
 
 
 file_directory = "/home/jared/Videos/project3/train";
@@ -27,7 +28,7 @@ start, end = 0, 27
 #ipd.Audio(data=x[start*sr:end*sr], rate=sr)
 
 def computeMFCC(Sings,path_to_audio):
-    for i in range(1,2401):
+    for i in range(390,410):
         filename = path_to_audio+ files[i,0]+".mp3"
        
         x, sr = librosa.load(filename, sr=None, mono=True,duration=29)
@@ -46,7 +47,8 @@ def computeMFCC(Sings,path_to_audio):
 
 
 def computeSpec(i,Xs):
-    filename = "/home/jared/Downloads/project3/test/" + files[i]+".mp3"
+    print(files[i])
+    filename = "/home/jared/Downloads/project3/train/" + files[i][0]+".mp3"
         #All songs seem to be at least 29s long
     x, sr = librosa.load(filename, sr=None, mono=True,duration=29)
     #librosa.display.waveplot(Xs[i], SRs[i], alpha=0.5);
@@ -60,9 +62,9 @@ def computeSpec(i,Xs):
     mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
     log_mel = librosa.amplitude_to_db(mel)
 
-    librosa.display.specshow(log_mel,cmap = 'coolwarm', sr=sr, hop_length=512, x_axis='time')
+    librosa.display.specshow(log_mel,cmap = 'gray', sr=sr, hop_length=512, x_axis='time')
     
-    plt.savefig('/home/jared/CS429/test_spec/' +str(i)+'.png')
+    #plt.savefig('/home/jared/CS429/test_spec/' +str(i)+'.png')
     plt.show()
 
 
@@ -100,7 +102,16 @@ def comp_for_SVD(Xs, genre):
 
 #Only run the Parallel job once.
 #Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
+#computeSpec(4, Xs1)
 computeMFCC(Sings,"/home/jared/Downloads/project3/train/")
+Sings = np.array(Sings)
+print(Sings[:,-1])
+x_train, x_test, y_train, y_test = train_test_split(Sings[:,-1], Sings[:,-1], test_size=0.25, random_state=0)
+
+#skl.preprocessing.normalize(Sings[:,:-1], norm='l2')
+logReg = skl.linear_model.LogisticRegression()
+logReg.fit(x_train,y_train)
+
 
 
 
