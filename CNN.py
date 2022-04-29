@@ -110,7 +110,13 @@ def test(model):
     
     y_pred = np.argmax(model.predict(x), axis=-1)
 
-    print(y_pred)
+    #print(y_pred)
+
+    with open('solution_CNN.csv', 'w+', newline='') as out:
+        writer = csv.writer(out)
+        writer.writerow(['id' , 'genre'])
+        for i in range(1200):
+            writer.writerow([indices[i][0], y_pred[i]])
 
 
 if __name__ == "__main__":
