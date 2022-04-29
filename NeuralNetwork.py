@@ -44,7 +44,7 @@ def get_data():
             class_num = 5    
 
         #Split data for validation
-        if i % 10 == 0:
+        if i % 5 == 0:
             x_val.append(img)
             y_val.append(class_num)
         else:
@@ -63,13 +63,15 @@ def train(x_data, x_valid, y_data, y_valid):
     model = keras.models.Sequential()
 
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
-    model.add(keras.layers.Dense(300, activation="relu"))
-    model.add(keras.layers.Dense(100, activation="relu"))
+    model.add(keras.layers.Dense(1000, activation="relu"))
+    model.add(keras.layers.Dense(500, activation="relu"))
+    model.add(keras.layers.Dense(50, activation="relu"))
+
     model.add(keras.layers.Dense(6, activation="softmax"))
 
     model.summary()
 
-    optimizer = keras.optimizers.SGD(learning_rate=1e-4)
+    optimizer = keras.optimizers.Adam(learning_rate=1e-8)
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer=optimizer,
                   metrics=["accuracy"])  
@@ -85,6 +87,7 @@ def train(x_data, x_valid, y_data, y_valid):
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
+    plt.savefig('loss_function.pdf')
 
     return model
 
@@ -102,7 +105,7 @@ def test(model):
     x = []
     for i in range(1, 1201):
         print("Testing image", (i))
-        file = f"Spectrograms/{i}.png"
+        file = f"test_spec/{i}.png"
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
