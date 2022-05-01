@@ -17,6 +17,7 @@ from tensorflow import keras
 
 from skimage import io
 
+import csv
 
 import numpy as np
 
@@ -46,7 +47,6 @@ def get_data():
 
         #Get rid of extra pixels
         img = img[60:426,81:575]
-        #preprocessing.normalize(img, norm='l2')
         #Split data for validation
         if i % 4 == 0:
             x_val.append(img)
@@ -73,11 +73,11 @@ def train(x_data, x_valid, y_data, y_valid):
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
 
-    model.summary()
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
     model.add(layers.Dense(6, activation='softmax'))
+    model.summary()
 
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer="sgd",
@@ -101,6 +101,7 @@ def train(x_data, x_valid, y_data, y_valid):
 def test(model):
     x = []
     n_files = 2400
+    indices =[]
     for i in range(n_files):
         print("Testing image", (i+1))
         file = f"Spectrograms/{i+1}.png"
