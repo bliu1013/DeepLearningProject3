@@ -24,13 +24,16 @@ Xs2 = []
 SRs = []
 timeseries = []
 Sings = []
+Sings2 = []
 start, end = 0, 27
 #ipd.Audio(data=x[start*sr:end*sr], rate=sr)
 
-def computeMFCC(Sings,path_to_audio):
-    for i in range(390,410):
-        filename = path_to_audio+ files[i,0]+".mp3"
-       
+def computeMFCC(Sings,path_to_audio,files):
+    for i in range(1,2401):
+        if (len(files[0]) ==2):
+            filename = path_to_audio+ files[i,0]+".mp3"
+        else:
+            filename = path_to_audio+ files[i]+".mp3"
         x, sr = librosa.load(filename, sr=None, mono=True,duration=29)
         stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
         mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
@@ -41,7 +44,8 @@ def computeMFCC(Sings,path_to_audio):
         X = skl.decomposition.TruncatedSVD(n_components = 100).fit(mel)
         A=X.singular_values_.tolist()
         B=list(A)
-        B.insert(len(A),int(files[i][1]))
+        if (len(files[0]) ==2):
+            B.insert(len(A),int(files[i][1]))
         Sings.append(B)
     return Sings
 
@@ -103,16 +107,31 @@ def comp_for_SVD(Xs, genre):
 #Only run the Parallel job once.
 #Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
 #computeSpec(4, Xs1)
-computeMFCC(Sings,"/home/jared/Downloads/project3/train/")
+computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files)
+
 Sings = np.array(Sings)
-print(Sings[:,-1])
-x_train, x_test, y_train, y_test = train_test_split(Sings[:,-1], Sings[:,-1], test_size=0.25, random_state=0)
+newlist = [Sings[x][-1] for x in range(len(Sings))]
+B = np.delete(Sings, -1, axis=1)
+print(newlist)
+skl.preprocessing.normalize(B, norm='l2')
 
-#skl.preprocessing.normalize(Sings[:,:-1], norm='l2')
-logReg = skl.linear_model.LogisticRegression()
-logReg.fit(x_train,y_train)
+#x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.0, random_state=None)
+#Try w/150ish iter to improve acc
+logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 75,C=1.75)
+logReg.fit(B,newlist)
 
+computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files)
+Sings2 = np.array(Sings2)
+#newlist2 = [Sings2[x][-1] for x in range(len(Sings2))]
+B2 = np.delete(Sings2, -1, axis=1)
+skl.preprocessing.normalize(B2, norm='l2')
+#x_train, x_test, y_train, y_test = train_test_split(B2, newlist2, test_size=1.0, random_state=None)
 
+predictions = logReg.predict(B2)
+#score = logReg.score(x_test, y_test)
+print(predictions)
+np.save("foo.csv", test_files, delimiter=",")
 
+np.save
 
 
