@@ -135,7 +135,8 @@ def test(model):
 if __name__ == "__main__":
     x_data, x_valid, y_data, y_valid = get_data()
     #print(np.shape(x_data), y_data)
-
+    x_data = x_data.reshape(-1, 28, 28, 1)
+    x_valid = x_valid.reshape(-1, 28, 28, 1)
     model = train(x_data, x_valid, y_data, y_valid)
 
     test(model)
