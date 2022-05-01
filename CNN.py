@@ -55,7 +55,7 @@ def get_data():
             x.append(img)
             y.append(class_num)
 
-        if (i+1) % (600) == 0:
+        if (i+1) % (400) == 0:
             class_num += 1
 
     return x, x_val, y, y_val
@@ -66,7 +66,7 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(366, 494,3)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(366, 494, 1)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
@@ -77,7 +77,7 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dense(10))
+    model.add(layers.Dense(6, activation='softmax'))
 
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer="sgd",
@@ -110,7 +110,13 @@ def test(model):
     
     y_pred = np.argmax(model.predict(x), axis=-1)
 
-    print(y_pred)
+    #print(y_pred)
+
+    with open('solution_CNN.csv', 'w+', newline='') as out:
+        writer = csv.writer(out)
+        writer.writerow(['id' , 'genre'])
+        for i in range(1200):
+            writer.writerow([indices[i][0], y_pred[i]])
 
 
 if __name__ == "__main__":
