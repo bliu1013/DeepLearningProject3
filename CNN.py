@@ -15,7 +15,7 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
-
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage import io
 
 import csv
@@ -48,7 +48,7 @@ def get_data():
 
         #Get rid of extra pixels
         img = img[60:426,81:575]
-
+        print(img)
         if i <= 401:
             class_num = 0
         elif i <= 801:
@@ -80,8 +80,10 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(366, 494, 1)))
     model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Dropout(.2))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Dropout(.2))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
 
@@ -89,11 +91,13 @@ def train(x_data, x_valid, y_data, y_valid):
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
     model.add(layers.Dropout(.2))
+    model.add(layers.Dense(64, activation='relu'))
+
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
 
     model.compile(loss="sparse_categorical_crossentropy",
-                  optimizer="sgd",
+                  optimizer="adam",
                   metrics=["accuracy"])  
 
     #Convert all lists to nparrays
@@ -103,7 +107,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=50, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=20, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
@@ -138,7 +142,7 @@ def test(model):
         writer.writerow(['id' , 'genre'])
         for i in range(1200):
             writer.writerow([indices[i][0], y_pred[i]])
-
+            
 
 if __name__ == "__main__":
     x_data, x_valid, y_data, y_valid = get_data()
