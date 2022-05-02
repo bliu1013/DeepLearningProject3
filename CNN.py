@@ -139,4 +139,11 @@ if __name__ == "__main__":
     x_valid = np.expand_dims(x_valid, axis=-1)
     model = train(x_data, x_valid, y_data, y_valid)
 
-    test(model)
+    while True:
+        text = input("Continue to test? (y/n)\n")
+
+        if text == 'y':
+            test(model)
+            break
+        elif text == 'n':
+            break
