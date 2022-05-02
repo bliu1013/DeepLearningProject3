@@ -127,7 +127,7 @@ def test(model):
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
-    x = np.expand_dims(x_data, axis=-1)
+    #x = np.expand_dims(x_data, axis=-1)
 
     x = np.asarray(x)
     y_pred = np.argmax(model.predict(x), axis=-1)
@@ -142,8 +142,8 @@ def test(model):
 if __name__ == "__main__":
     x_data, x_valid, y_data, y_valid = get_data()
     #print(np.shape(x_data), y_data)
-    x_data = np.expand_dims(x_data, axis=-1)
-    x_valid = np.expand_dims(x_valid, axis=-1)
+    #x_data = np.expand_dims(x_data, axis=-1)
+    #x_valid = np.expand_dims(x_valid, axis=-1)
     model = train(x_data, x_valid, y_data, y_valid)
 
     while True:
