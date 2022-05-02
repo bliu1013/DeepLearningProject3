@@ -127,7 +127,8 @@ def test(model):
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
-    
+    x = np.expand_dims(x_data, axis=-1)
+
     x = np.asarray(x)
     y_pred = np.argmax(model.predict(x), axis=-1)
 
