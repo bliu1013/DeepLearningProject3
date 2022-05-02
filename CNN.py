@@ -88,6 +88,7 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dropout(.2))
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
 
