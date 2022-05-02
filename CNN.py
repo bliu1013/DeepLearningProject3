@@ -103,7 +103,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=300, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=50, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
