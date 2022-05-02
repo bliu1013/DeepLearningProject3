@@ -11,7 +11,7 @@ import sklearn
 from sklearn import preprocessing
 import tensorflow as tf
 
-from tensorflow.keras import datasets, layers, models
+from tensorflow.keras import datasets, layers, models, layers.Dropout
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
