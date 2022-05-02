@@ -15,7 +15,7 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
-from keras.layers import Dropout
+from layers import Dropout
 from skimage import io
 
 import csv
