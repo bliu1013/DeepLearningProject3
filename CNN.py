@@ -15,6 +15,7 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
+
 from skimage import io
 
 import csv
@@ -43,7 +44,7 @@ def get_data():
     for num, i in enumerate(specs):
         print("Reading image", (num))
         file = f"Spectrograms/{i}.png"
-        img = io.imread(file)
+        img = io.imread(file, as_gray=True)
 
         #Get rid of extra pixels
         img = img[60:426,81:575]
@@ -77,13 +78,13 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(32, (3, 3), activation='relu',input_shape=(366, 494, 3)))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(366, 494, 1)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    model.add(layers.Dropout(.2))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+
+
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
@@ -101,7 +102,7 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=30, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=300, validation_data=(x_valid, y_valid))
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
@@ -126,7 +127,7 @@ def test(model):
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
-    x = np.expand_dims(x_data, axis=-1)
+    x = np.expand_dims(x, axis=-1)
 
     x = np.asarray(x)
     y_pred = np.argmax(model.predict(x), axis=-1)
