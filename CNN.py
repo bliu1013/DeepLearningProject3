@@ -111,19 +111,25 @@ def train(x_data, x_valid, y_data, y_valid):
 
 
 def test(model):
+    #Get test example indices
+    indices = []
+    with open('test_idx.csv') as file:
+        reader = csv.reader(file)
+
+        for idx in reader:
+            if idx != ['new_id']:
+                indices.append(idx)
+
     x = []
-    n_files = 2400
-    indices =[]
-    for i in range(n_files):
-        print("Testing image", (i+1))
-        file = f"Spectrograms/{i+1}.png"
+    for i in range(1, 1201):
+        print("Testing image", (i))
+        file = f"test_spec/{i}.png"
         img = io.imread(file, as_gray=True)
         img = img[60:426,81:575]
         x.append(img)
     
+    x = np.asarray(x)
     y_pred = np.argmax(model.predict(x), axis=-1)
-
-    #print(y_pred)
 
     with open('solution_CNN.csv', 'w+', newline='') as out:
         writer = csv.writer(out)
