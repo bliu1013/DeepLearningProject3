@@ -44,7 +44,7 @@ def get_data():
     for num, i in enumerate(specs):
         print("Reading image", (num))
         file = f"Spectrograms/{i}.png"
-        img = io.imread(file, as_gray=True)
+        img = io.imread(file)
 
         #Get rid of extra pixels
         img = img[60:426,81:575]
@@ -78,7 +78,7 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', batch_input_shape=(16,366, 494, 1)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', batch_input_shape=(16,366, 494, 3)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
