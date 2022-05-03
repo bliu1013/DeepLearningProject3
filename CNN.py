@@ -155,7 +155,7 @@ if __name__ == "__main__":
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
     #model = make((400,400))
-    model.compile(loss="sparse_categorical_crossentropy",
+    model.compile(loss="categorical_crossentropy",
                   optimizer="sgd",
                   metrics=["accuracy"])   
     
