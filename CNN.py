@@ -143,7 +143,7 @@ if __name__ == "__main__":
     
 
     model = keras.models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(256, 256, 1)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(256, 256, 3)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
