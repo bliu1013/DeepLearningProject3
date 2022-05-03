@@ -142,11 +142,27 @@ if __name__ == "__main__":
     class_mode="categorical"
     )
     
-    model = make((400,400))
 
-    model.compile(loss="categorical_crossentropy",
-                  optimizer='Adam',
-                  metrics=["accuracy"])  
+    model = keras.models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(400, 400, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(6, activation='softmax'))
+    model.summary()
+    model.compile(loss="sparse_categorical_crossentropy",
+                  optimizer="sgd",
+                  metrics=["accuracy"])   
     
-    model.fit(train_ds,epochs=30,validation_data = valid_ds)
+    model.summary()
     
+    history = model.fit_generator(train_ds, epochs=30, validation_data=valid_ds)    
+    
+    pd.DataFrame(history.history).plot(figsize=(8, 5))
+    plt.grid(True)
+    plt.show()
