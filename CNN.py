@@ -12,17 +12,16 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
-from keras.preprocessing import image
-from tensorflow.keras.models import load_model
-import sklearn
-from sklearn import preprocessing
-import tensorflow as tf
+#from keras.preprocessing import image
+#from tensorflow.keras.models import load_model
+#import sklearn
+#from sklearn import preprocessing
+#import tensorflow as tf
 
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage import io
 
 import csv
@@ -143,9 +142,9 @@ def train(x_data, x_valid, y_data, y_valid):
     
     model.fit(train_generator,batch_size=(32),epochs=30)
     
-    accuracy = model.evaluate(validation_generator)
+    accuracy = model.evaluate(valid_generator)
     print('n', 'Test_Accuracy:-', accuracy[1])
-    pred = model.predict(validation_generator)
+    pred = model.predict(valid_generator)
     y_pred = np.argmax(pred, axis=1)
     y_true = np.argmax(pred, axis=1)
     print('confusion matrix')
