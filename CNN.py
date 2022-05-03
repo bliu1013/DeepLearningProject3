@@ -142,7 +142,7 @@ if __name__ == "__main__":
     subset = "validation",
     image_size = (400,400),
     batch_size=32,
-    class_mode="categorical",
+    label_mode="categorical",
     shuffle=True,
     seed=42
     )
