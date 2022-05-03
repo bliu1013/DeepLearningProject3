@@ -146,22 +146,25 @@ if __name__ == "__main__":
     model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(256, 256, 3)))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.AveragePooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.AveragePooling2D((2, 2)))
     model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
+    model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
     model.add(layers.Flatten())
-    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(256, activation='relu'))
+    model.add(layers.Dense(256, activation='relu'))
+    model.add(layers.Dropout(.2))
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
     #model = make((400,400))
     model.compile(loss="categorical_crossentropy",
-                  optimizer="sgd",
+                  optimizer="adam",
                   metrics=["accuracy"])   
     
     model.summary()
     
-    history = model.fit(train_ds, epochs=30, validation_data=valid_ds)    
+    history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
     
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
