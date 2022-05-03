@@ -144,13 +144,19 @@ if __name__ == "__main__":
 
     model = keras.models.Sequential()
     model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(256, 256, 3)))
+    model.add(layers.BatchNormalization())
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
+    model.add(layers.BatchNormalization())
     model.add(layers.AveragePooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
+    model.add(layers.BatchNormalization())
     model.add(layers.AveragePooling2D((2, 2)))
     model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
+    model.add(layers.BatchNormalization())
+    
     model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
+    model.add(layers.BatchNormalization())    
     model.add(layers.Flatten())
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(256, activation='relu'))
@@ -160,7 +166,7 @@ if __name__ == "__main__":
     #model = make((400,400))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.01),
+    learning_rate=0.0001,momentum=.9),
                   metrics=["accuracy"])   
     
     model.summary()
