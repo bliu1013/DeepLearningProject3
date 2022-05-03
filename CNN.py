@@ -159,8 +159,8 @@ if __name__ == "__main__":
     model.summary()
     #model = make((400,400))
     model.compile(loss="categorical_crossentropy",
-                  optimizer=tf.keras.optimizers.Adam(
-    learning_rate=0.0003),
+                  optimizer=tf.keras.optimizers.SGD(
+    learning_rate=0.01),
                   metrics=["accuracy"])   
     
     model.summary()
