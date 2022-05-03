@@ -161,7 +161,7 @@ if __name__ == "__main__":
     
     model.summary()
     
-    history = model.fit_generator(train_ds, epochs=30, validation_data=valid_ds)    
+    history = model.fit(train_ds, epochs=30, validation_data=valid_ds)    
     
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
