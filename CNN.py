@@ -83,7 +83,6 @@ def get_data():
  
  
 def make(input_shapes):
-
     inputs = keras.Input(shape=input_shapes)
     x = layers.Rescaling(1./255, offset=0.0)(inputs)   
     x = layers.Conv2D(32,3,strides=2,padding = "same")(x)
@@ -130,32 +129,32 @@ if __name__ == "__main__":
     
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
-    target_size = (400,400),
+    target_size = (256,256),
     batch_size=32,
     class_mode="categorical"
     )
 
     valid_ds = valid_datagen.flow_from_directory(
     directory="Data/validation",
-    target_size = (400,400),
+    target_size = (256,256),
     batch_size=32,
     class_mode="categorical"
     )
     
 
-    # model = keras.models.Sequential()
-    # model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(400, 400, 1)))
-    # model.add(layers.MaxPooling2D((2, 2)))
-    # model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.MaxPooling2D((2, 2)))
-    # model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.MaxPooling2D((2, 2)))
-    # model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.Flatten())
-    # model.add(layers.Dense(128, activation='relu'))
-    # model.add(layers.Dense(6, activation='softmax'))
-    # model.summary()
-    model = make((400,400))
+    model = keras.models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(256, 256, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(6, activation='softmax'))
+    model.summary()
+    #model = make((400,400))
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer="sgd",
                   metrics=["accuracy"])   
