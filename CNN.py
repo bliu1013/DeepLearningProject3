@@ -78,19 +78,19 @@ def train(x_data, x_valid, y_data, y_valid):
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(366, 494, 1)))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Conv2D(32, (5, 5),padding ="same", activation='relu', input_shape=(366, 494, 1)))
+    model.add(layers.AveragePooling2D((2, 2)))
+    #model.add(layers.Dropout(.2))
+    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
+    model.add(layers.AveragePooling2D((2, 2)))
+    #model.add(layers.Dropout(.2))
+    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
 
 
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dropout(.2))
+    #model.add(layers.Dropout(.2))
     model.add(layers.Dense(64, activation='relu'))
 
     model.add(layers.Dense(6, activation='softmax'))
