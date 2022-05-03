@@ -130,7 +130,7 @@ if __name__ == "__main__":
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (256,256),
-    batch_size=32,
+    batch_size=16,
     class_mode="categorical"
     )
 
