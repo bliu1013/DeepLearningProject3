@@ -135,7 +135,7 @@ if __name__ == "__main__":
     class_mode="categorical"
     )
 
-    valid_ds = valid_datagen.image_dataset_from_directory(
+    valid_ds = valid_datagen.flow_from_directory(
     directory="Data/validation",
     target_size = (400,400),
     batch_size=32,
