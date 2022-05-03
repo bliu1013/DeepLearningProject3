@@ -79,128 +79,37 @@ def get_data():
 
     return x, x_val, y, y_val
 
+  
+ 
+ 
+def make(input_shapes):
 
-def train(x_data, x_valid, y_data, y_valid):
-    #Create model
-    train_datagen = ImageDataGenerator(rescale=1./255)
-    valid_datagen = ImageDataGenerator(rescale=1./255)
-    test_datagen = ImageDataGenerator(rescale=1./255)
+    inputs = keras.Input(shape=input_shapes)
+    x = layers.Rescaling(1./255, offset=0.0)(inputs)   
+    x = layers.Conv2D(32,3,strides=2,padding = "same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+
+    x = layers.Conv2D(64,3,strides=2,padding = "same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
     
-    train_generator = train_datagen.flow_from_directory(
-    directory=r"Data/train/",
-    target_size=(224, 224),
-    color_mode="rgb",
-    batch_size=32,
-    class_mode="categorical",
-    shuffle=True,
-    seed=42
-    )
-
-    valid_generator = valid_datagen.flow_from_directory(
-    directory=r"Data/validation/",
-    target_size=(224, 224),
-    color_mode="rgb",
-    batch_size=32,
-    class_mode="categorical",
-    shuffle=True,
-    seed=42
-    )
-
-    test_generator = test_datagen.flow_from_directory(
-    directory=r"Data/test/",
-    target_size=(224, 224),
-    color_mode="rgb",
-    batch_size=32,
-    class_mode="categorical",
-    shuffle=True,
-    seed=42
-    )
-
-
-    model = keras.models.Sequential()
-
-    model.add(layers.Conv2D(32, (5, 5),padding ="same", activation='relu', input_shape=(366, 494, 1)))
-    model.add(layers.AveragePooling2D((2, 2)))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
-    model.add(layers.AveragePooling2D((2, 2)))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
-
-
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation='relu'))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Dense(64, activation='relu'))
-
-    model.add(layers.Dense(6, activation='softmax'))
-    model.summary()
-
-    model.compile(loss="sparse_categorical_crossentropy",
-                  optimizer="adam",
-                  metrics=["accuracy"])  
+    x = layers.SeparableConv2D(128, 3, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
     
-    model.fit(train_generator,batch_size=(32),epochs=30)
+    x = layers.GlobalAveragePooling2D()(x)
+    x=layers.Dropout(.2)(x)
+    outputs = layers.Dense(6,activation = "softmax")(x)
+    return keras.model(inputs,outputs)
+
     
-    accuracy = model.evaluate(valid_generator)
-    print('n', 'Test_Accuracy:-', accuracy[1])
-    pred = model.predict(valid_generator)
-    y_pred = np.argmax(pred, axis=1)
-    y_true = np.argmax(pred, axis=1)
-    print('confusion matrix')
-    print(confusion_matrix(y_true, y_pred))
-    #confusion matrix
-    f, ax = plt.subplots(figsize=(8,5))
-    sns.heatmap(confusion_matrix(y_true, y_pred), annot=True, fmt=".0f", ax=ax)
-    plt.xlabel("y_pred")
-    plt.ylabel("y_true")
-    plt.show()
-    #Convert all lists to nparrays
-    x_data = np.asarray(x_data)
-    x_valid = np.asarray(x_valid)
-    y_data = np.asarray(y_data)
-    y_valid = np.asarray(y_valid)
-
-    #Run
-    history = model.fit(x_data, y_data, epochs=20, validation_data=(x_valid, y_valid))
-    pd.DataFrame(history.history).plot(figsize=(8, 5))
-    plt.grid(True)
-    plt.show()
-
-    return model
 
 
-def test(model):
-    #Get test example indices
-    indices = []
-    with open('test_idx.csv') as file:
-        reader = csv.reader(file)
-
-        for idx in reader:
-            if idx != ['new_id']:
-                indices.append(idx)
-
-    x = []
-    for i in range(1, 1201):
-        print("Testing image", (i))
-        file = f"test_spec/{i}.png"
-        img = io.imread(file, as_gray=True)
-        img = img[60:426,81:575]
-        x.append(img)
-    x = np.expand_dims(x, axis=-1)
-
-    x = np.asarray(x)
-    y_pred = np.argmax(model.predict(x), axis=-1)
-
-    with open('solution_CNN.csv', 'w+', newline='') as out:
-        writer = csv.writer(out)
-        writer.writerow(['id' , 'genre'])
-        for i in range(1200):
-            writer.writerow([indices[i][0], y_pred[i]])
             
 
 if __name__ == "__main__":
+    ######################
     # x_data, x_valid, y_data, y_valid = get_data()
     # #print(np.shape(x_data), y_data)
     # x_data = np.expand_dims(x_data, axis=-1)
@@ -216,77 +125,33 @@ if __name__ == "__main__":
     #     elif text == 'n':
     #         break
 ###################
-    train_datagen = ImageDataGenerator(rescale=1./255)
-    valid_datagen = ImageDataGenerator(rescale=1./255)
-    test_datagen = ImageDataGenerator(rescale=1./255)
-
-    train_generator = train_datagen.flow_from_directory(
-    directory=r"Data/train/",
-    target_size=(224, 224),
-    color_mode="rgb",
+    train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    directory="Data",
+    validation_split=0.2,
+    subset = "training",
+    image_size = (400,400),
     batch_size=32,
     class_mode="categorical",
     shuffle=True,
     seed=42
     )
 
-    valid_generator = valid_datagen.flow_from_directory(
-    directory=r"Data/validation/",
-    target_size=(224, 224),
-    color_mode="rgb",
+    valid_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    directory="Data",
+    validation_split=0.2,
+    subset = "validation",
+    image_size = (400,400),
     batch_size=32,
     class_mode="categorical",
     shuffle=True,
     seed=42
     )
-
-    test_generator = test_datagen.flow_from_directory(
-    directory=r"Data/test/",
-    target_size=(224, 224),
-    color_mode="rgb",
-    batch_size=32,
-    class_mode="categorical",
-    shuffle=True,
-    seed=42
-    )
-
-
-    model = keras.models.Sequential()
-
-    model.add(layers.Conv2D(32, (5, 5),padding ="same", activation='relu', input_shape=(366, 494, 1)))
-    model.add(layers.AveragePooling2D((2, 2)))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
-    model.add(layers.AveragePooling2D((2, 2)))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Conv2D(64, (3, 3),padding ="same", activation='relu'))
-
-
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation='relu'))
-    #model.add(layers.Dropout(.2))
-    model.add(layers.Dense(64, activation='relu'))
-
-    model.add(layers.Dense(6, activation='softmax'))
-    model.summary()
+    
+    model = make((400,400))
 
     model.compile(loss="categorical_crossentropy",
-                  optimizer="adam",
+                  optimizer=keras.optimizers.Adam(.01),
                   metrics=["accuracy"])  
     
-    model.fit(train_generator,batch_size=32,epochs=30)
+    model.fit(train_ds,epochs=30,validation_data = valid_ds)
     
-    accuracy = model.evaluate(valid_generator)
-    print('n', 'Test_Accuracy:-', accuracy[1])
-    pred = model.predict(valid_generator)
-    y_pred = np.argmax(pred, axis=1)
-    y_true = np.argmax(pred, axis=1)
-    print('confusion matrix')
-    print(confusion_matrix(y_true, y_pred))
-    #confusion matrix
-    f, ax = plt.subplots(figsize=(8,5))
-    sns.heatmap(confusion_matrix(y_true, y_pred), annot=True, fmt=".0f", ax=ax)
-    plt.xlabel("y_pred")
-    plt.ylabel("y_true")
-    plt.show()
