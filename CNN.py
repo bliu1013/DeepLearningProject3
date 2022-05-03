@@ -22,6 +22,7 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 from tensorflow import keras
 import random
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage import io
 
 import csv
@@ -270,11 +271,11 @@ if __name__ == "__main__":
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
 
-    model.compile(loss="sparse_categorical_crossentropy",
+    model.compile(loss="categorical_crossentropy",
                   optimizer="adam",
                   metrics=["accuracy"])  
     
-    model.fit_generator(train_generator,batch_size=(32),epochs=30)
+    model.fit(train_generator,batch_size=32,epochs=30)
     
     accuracy = model.evaluate(valid_generator)
     print('n', 'Test_Accuracy:-', accuracy[1])
