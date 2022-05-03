@@ -274,7 +274,7 @@ if __name__ == "__main__":
                   optimizer="adam",
                   metrics=["accuracy"])  
     
-    model.fit(train_generator,batch_size=(32),epochs=30)
+    model.fit_generator(train_generator,batch_size=(32),epochs=30)
     
     accuracy = model.evaluate(valid_generator)
     print('n', 'Test_Accuracy:-', accuracy[1])
