@@ -94,7 +94,7 @@ def make(input_shapes):
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
     
-    x = layers.SeparableConv2D(128, 3, padding="same")(x)
+    x = layers.Conv2D(128, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
     
@@ -125,32 +125,27 @@ if __name__ == "__main__":
     #     elif text == 'n':
     #         break
 ###################
-    train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    directory="Data",
-    validation_split=0.2,
-    subset = "training",
-    image_size = (400,400),
+    train_datagen = ImageDataGenerator(rescale = 1/255.0)
+    valid_datagen = ImageDataGenerator(rescale = 1/255.0)
+    
+    train_ds = train_datagen.flow_from_directory(
+    directory="Data/training",
+    target_size = (400,400),
     batch_size=32,
-    label_mode="categorical",
-    shuffle=True,
-    seed=42
+    class_mode="categorical"
     )
 
-    valid_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    directory="Data",
-    validation_split=0.2,
-    subset = "validation",
-    image_size = (400,400),
+    valid_ds = valid_datagen.image_dataset_from_directory(
+    directory="Data/validation",
+    target_size = (400,400),
     batch_size=32,
-    label_mode="categorical",
-    shuffle=True,
-    seed=42
+    class_mode="categorical"
     )
     
     model = make((400,400))
 
     model.compile(loss="categorical_crossentropy",
-                  optimizer=keras.optimizers.Adam(.01),
+                  optimizer='Adam',
                   metrics=["accuracy"])  
     
     model.fit(train_ds,epochs=30,validation_data = valid_ds)
