@@ -137,7 +137,7 @@ if __name__ == "__main__":
     valid_ds = valid_datagen.flow_from_directory(
     directory="Data/validation",
     target_size = (256,256),
-    batch_size=32,
+    batch_size=16,
     class_mode="categorical"
     )
     
