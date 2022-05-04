@@ -148,10 +148,10 @@ if __name__ == "__main__":
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
     model.add(layers.BatchNormalization())
-    model.add(layers.AveragePooling2D((2, 2)))
+    model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
     model.add(layers.BatchNormalization())
-    model.add(layers.AveragePooling2D((2, 2)))
+    model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
     model.add(layers.BatchNormalization())
     
