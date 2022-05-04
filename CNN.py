@@ -65,7 +65,8 @@ if __name__ == "__main__":
     directory="Data/training",
     target_size = (480,480),
     batch_size=16,
-    class_mode="categorical"
+    class_mode="categorical",
+    shuffle=(True)
     )
 
     valid_ds = valid_datagen.flow_from_directory(
@@ -77,10 +78,10 @@ if __name__ == "__main__":
     
 
     model = keras.models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu',padding="same", input_shape=(480, 480, 3)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     model.add(layers.BatchNormalization())
     #model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.BatchNormalization())
     #model.add(layers.MaxPooling2D((2, 2)))
     #model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
@@ -105,11 +106,10 @@ if __name__ == "__main__":
     model.summary()
     #model = make((400,400))
     model.compile(loss=tf.keras.losses.KLDivergence(),
-                  optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.0001,momentum=.9),
+                  optimizer=tf.keras.optimizers.Adam()(
+    learning_rate=0.0000001),
                   metrics=["accuracy"])   
     
-    model.summary()
     
     history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
     
