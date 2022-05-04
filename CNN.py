@@ -106,7 +106,7 @@ if __name__ == "__main__":
     model.summary()
     #model = make((400,400))
     model.compile(loss=tf.keras.losses.KLDivergence(),
-                  optimizer=tf.keras.optimizers.Adam()(
+                  optimizer=tf.keras.optimizers.SGD()(
     learning_rate=0.0000001),
                   metrics=["accuracy"])   
     
