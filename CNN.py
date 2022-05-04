@@ -112,33 +112,34 @@ if __name__ == "__main__":
     model.summary()
     
     history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
+    
     img = keras.preprocessing.image.load_img(
     "test_spec/1.png", target_size=(480,480)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-
-    predictions = history.predict(img_array)
+    predictions = model.predict(img_array)
     score = predictions[0]
     print(score)
+   
     img = keras.preprocessing.image.load_img(
     "test_spec/105.png", target_size=(480,480)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-
-    predictions = history.predict(img_array)
+    predictions = model.predict(img_array)
     score = predictions[0]
     print(score)
+    
     img = keras.preprocessing.image.load_img(
     "test_spec/700.png", target_size=(480,480)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-
-    predictions = history.predict(img_array)
+    predictions = model.predict(img_array)
     score = predictions[0]
     print(score)
+    
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
