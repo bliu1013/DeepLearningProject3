@@ -129,14 +129,14 @@ if __name__ == "__main__":
     
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
-    target_size = (256,256),
+    target_size = (480,480),
     batch_size=16,
     class_mode="categorical"
     )
 
     valid_ds = valid_datagen.flow_from_directory(
     directory="Data/validation",
-    target_size = (256,256),
+    target_size = (480,480),
     batch_size=16,
     class_mode="categorical"
     )
@@ -178,14 +178,14 @@ if __name__ == "__main__":
     model.summary()
     
     history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
-    img = keras.preprocessing.image.load_img(
-    "test_spec/1.png", target_size=(256,256)
-    )
-    img_array = keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+    # img = keras.preprocessing.image.load_img(
+    # "test_spec/1.png", target_size=(480,480)
+    # )
+    # img_array = keras.preprocessing.image.img_to_array(img)
+    # img_array = tf.expand_dims(img_array, 0)  # Create batch axis
 
-    predictions = history.predict(img_array)
-    score = predictions[0]
+    # predictions = history.predict(img_array)
+    # score = predictions[0]
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
