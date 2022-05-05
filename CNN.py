@@ -108,12 +108,12 @@ if __name__ == "__main__":
     #model = make((400,400))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.001),
+    learning_rate=0.0001),
                   metrics=["accuracy"])   
     
     model.summary()
     
-    history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
+    history = model.fit(train_ds, epochs=100, validation_data=valid_ds)    
     
     img = keras.preprocessing.image.load_img(
     "test_spec/1.png", target_size=(480,480)
