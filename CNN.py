@@ -112,7 +112,7 @@ if __name__ == "__main__":
     
     model.summary()
     
-    history = model.fit(train_ds, epochs=100, validation_data=valid_ds)    
+    history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
     
     img = keras.preprocessing.image.load_img(
     "test_spec/1.png", target_size=(480,480)
