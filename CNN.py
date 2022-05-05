@@ -20,7 +20,7 @@ from tensorflow import keras
 import random
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage import io
-
+from keras.callbacks import ModelCheckpoint
 import csv
 
 import numpy as np
@@ -79,36 +79,25 @@ if __name__ == "__main__":
     )
 
     model = keras.models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
+    model.add(layers.SeparableConv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     model.add(layers.BatchNormalization())
-    #model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.SeparableConv2D(64, (3, 3), activation='relu'))
     model.add(layers.BatchNormalization())
-    #model.add(layers.MaxPooling2D((2, 2)))
-    #model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
-    #model.add(layers.BatchNormalization())
-    #model.add(layers.MaxPooling2D((2, 2)))
-    # model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.BatchNormalization())
-    #model.add(layers.MaxPooling2D((2, 2)))
-    
-    # model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.BatchNormalization())   
-    # model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.BatchNormalization())   
-    # model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
-    # model.add(layers.BatchNormalization())   
+    model.add(layers.SeparableConv2D(128, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())     
     model.add(layers.GlobalAveragePooling2D())
-    model.add(layers.Dense(64, activation='relu'))
-    #model.add(layers.Dense(128, activation='relu'))
+    #model.add(layers.Dense(64, activation='relu'))
     model.add(layers.Dropout(.2))
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
-    #model = make((400,400))
+    #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
     learning_rate=0.0001),
                   metrics=["accuracy"])   
+    
+    filepath="weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     
     model.summary()
     

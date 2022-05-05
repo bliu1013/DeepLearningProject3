@@ -28,8 +28,8 @@ Sings2 = []
 start, end = 0, 27
 #ipd.Audio(data=x[start*sr:end*sr], rate=sr)
 
-def computeMFCC(Sings,path_to_audio,files):
-    for i in range(1,2401):
+def computeMFCC(Sings,path_to_audio,files,limit):
+    for i in range(1,limit):
         if (len(files[0]) ==2):
             filename = path_to_audio+ files[i,0]+".mp3"
         else:
@@ -41,7 +41,7 @@ def computeMFCC(Sings,path_to_audio,files):
         mfcc = skl.preprocessing.StandardScaler().fit_transform(x.reshape(1, -1))
         #librosa.display.specshow(mfcc, sr=sr, x_axis='time');
         #COMP SVD OF MFCC. COMMENT OUT FOR just MFCCS
-        X = skl.decomposition.TruncatedSVD(n_components = 100).fit(mel)
+        X = skl.decomposition.TruncatedSVD(n_components = 50).fit(mel)
         A=X.singular_values_.tolist()
         B=list(A)
         if (len(files[0]) ==2):
@@ -85,7 +85,7 @@ def compSVD_dft(Xs):
         #dft = librosa.amplitude_to_db(dft, ref=np.max)
         #print(dft.shape)
         #plt.plot(dft)
-        svd = skl.decomposition.TruncatedSVD(n_components = 100).fit(x.reshape(1,-1))
+        svd = skl.decomposition.TruncatedSVD(n_components = 50).fit(x.reshape(1,-1))
         print("SVD",svd.singular_values_.T)
         print(svd.singular_values_.T.flatten())
         Xs.append(svd.singular_values_)
@@ -107,7 +107,7 @@ def comp_for_SVD(Xs, genre):
 #Only run the Parallel job once.
 #Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
 #computeSpec(4, Xs1)
-computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files)
+computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
 
 Sings = np.array(Sings)
 newlist = [Sings[x][-1] for x in range(len(Sings))]
@@ -115,23 +115,24 @@ B = np.delete(Sings, -1, axis=1)
 print(newlist)
 skl.preprocessing.normalize(B, norm='l2')
 
-#x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.0, random_state=None)
+x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.0, random_state=None)
 #Try w/150ish iter to improve acc
-logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 75,C=1.75)
-logReg.fit(B,newlist)
+logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 150,C=1.75)
+logReg.fit(x_train,y_train)
 
-computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files)
+computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
 Sings2 = np.array(Sings2)
-#newlist2 = [Sings2[x][-1] for x in range(len(Sings2))]
-B2 = np.delete(Sings2, -1, axis=1)
-skl.preprocessing.normalize(B2, norm='l2')
-#x_train, x_test, y_train, y_test = train_test_split(B2, newlist2, test_size=1.0, random_state=None)
 
-predictions = logReg.predict(B2)
-#score = logReg.score(x_test, y_test)
+skl.preprocessing.normalize(Sings2, norm='l2')
+
+score = logReg.score(x_test, y_test)
+print(score)
+
+predictions = logReg.predict(Sings2)
+
 print(predictions)
-np.save("foo.csv", test_files, delimiter=",")
+# np.save("foo.csv", test_files, delimiter=",")
 
-np.save
+# np.save
 
 
