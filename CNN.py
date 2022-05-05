@@ -106,9 +106,9 @@ if __name__ == "__main__":
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
     #model = make((400,400))
-    model.compile(loss=tf.keras.losses.KLDivergence(),
+    model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.000001,momentum=.9),
+    learning_rate=0.01),
                   metrics=["accuracy"])   
     
     model.summary()
