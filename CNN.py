@@ -98,8 +98,7 @@ if __name__ == "__main__":
     # model.add(layers.BatchNormalization())   
     # model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
     # model.add(layers.BatchNormalization())   
-    
-    model.add(layers.Flatten())
+    model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(64, activation='relu'))
     #model.add(layers.Dense(128, activation='relu'))
     model.add(layers.Dropout(.2))
