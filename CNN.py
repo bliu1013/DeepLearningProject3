@@ -77,7 +77,6 @@ if __name__ == "__main__":
     class_mode="categorical",
     subset='validation'
     )
-    print(valid_ds.classes())
 
     model = keras.models.Sequential()
     model.add(layers.Conv2D(128, (3, 3), activation='relu', input_shape=(480, 480, 3)))
