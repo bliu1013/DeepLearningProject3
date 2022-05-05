@@ -80,11 +80,11 @@ if __name__ == "__main__":
 
     model = keras.models.Sequential()
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
-    #model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.BatchNormalization())
+    #model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    #model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.BatchNormalization())
+    #model.add(layers.MaxPooling2D((2, 2)))
     #model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
     #model.add(layers.BatchNormalization())
     #model.add(layers.MaxPooling2D((2, 2)))
@@ -108,12 +108,12 @@ if __name__ == "__main__":
     #model = make((400,400))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.0001),
+    learning_rate=0.001),
                   metrics=["accuracy"])   
     
     model.summary()
     
-    history = model.fit(train_ds, epochs=100, validation_data=valid_ds)    
+    history = model.fit(train_ds, epochs=50, validation_data=valid_ds)    
     
     img = keras.preprocessing.image.load_img(
     "test_spec/1.png", target_size=(480,480)
