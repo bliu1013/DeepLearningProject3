@@ -64,7 +64,7 @@ if __name__ == "__main__":
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=16,
+    batch_size=32,
     class_mode="categorical",
     subset='training',
     shuffle=(True)
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     valid_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=16,
+    batch_size=32,
     class_mode="categorical",
     subset='validation'
     )
@@ -88,9 +88,9 @@ if __name__ == "__main__":
     #model.add(layers.Conv2D(64, (3, 3),padding="same", activation='relu'))
     #model.add(layers.BatchNormalization())
     #model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
-    model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
+    # model.add(layers.Conv2D(128, (3, 3),padding="same", activation='relu'))
+    # model.add(layers.BatchNormalization())
+    #model.add(layers.MaxPooling2D((2, 2)))
     
     # model.add(layers.Conv2D(256, (3, 3),padding="same", activation='relu'))
     # model.add(layers.BatchNormalization())   
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # model.add(layers.BatchNormalization())   
     
     model.add(layers.Flatten())
-    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(64, activation='relu'))
     #model.add(layers.Dense(128, activation='relu'))
     #model.add(layers.Dropout(.2))
     model.add(layers.Dense(6, activation='softmax'))
