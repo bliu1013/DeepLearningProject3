@@ -58,24 +58,26 @@ def make(input_shapes):
 
 if __name__ == "__main__":
 
-    train_datagen = ImageDataGenerator(rescale = 1/255.0)
-    valid_datagen = ImageDataGenerator(rescale = 1/255.0)
+    train_datagen = ImageDataGenerator(rescale = 1/255.0,validation_split=0.2)
+    #valid_datagen = ImageDataGenerator(rescale = 1/255.0)
     
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
     batch_size=16,
     class_mode="categorical",
+    subset='training',
     shuffle=(True)
     )
 
-    valid_ds = valid_datagen.flow_from_directory(
-    directory="Data/validation",
+    valid_ds = train_datagen.flow_from_directory(
+    directory="Data/training",
     target_size = (480,480),
     batch_size=16,
-    class_mode="categorical"
+    class_mode="categorical",
+    subset='validation'
     )
-    
+    print(valid_ds.classes())
 
     model = keras.models.Sequential()
     model.add(layers.Conv2D(128, (3, 3), activation='relu', input_shape=(480, 480, 3)))
