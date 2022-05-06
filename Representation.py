@@ -13,6 +13,9 @@ import librosa
 import librosa.display
 from joblib import Parallel,delayed
 from sklearn.model_selection import train_test_split
+from scipy.stats import loguniform
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.model_selection import RandomizedSearchCV
 
 
 file_directory = "/home/jared/Videos/project3/train";
@@ -41,7 +44,8 @@ def computeMFCC(Sings,path_to_audio,files,limit):
         mfcc = skl.preprocessing.StandardScaler().fit_transform(x.reshape(1, -1))
         #librosa.display.specshow(mfcc, sr=sr, x_axis='time');
         #COMP SVD OF MFCC. COMMENT OUT FOR just MFCCS
-        X = skl.decomposition.TruncatedSVD(n_components = 50).fit(mel)
+        #Better results with 25
+        X = skl.decomposition.TruncatedSVD(n_components = 21).fit(mel)
         A=X.singular_values_.tolist()
         B=list(A)
         if (len(files[0]) ==2):
@@ -115,18 +119,15 @@ B = np.delete(Sings, -1, axis=1)
 print(newlist)
 skl.preprocessing.normalize(B, norm='l2')
 
-x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.0, random_state=None)
+x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
 #Try w/150ish iter to improve acc
-logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 150,C=1.75)
+logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='saga',max_iter = 119)
 logReg.fit(x_train,y_train)
 
 computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
 Sings2 = np.array(Sings2)
 
 skl.preprocessing.normalize(Sings2, norm='l2')
-
-score = logReg.score(x_test, y_test)
-print(score)
 
 predictions = logReg.predict(Sings2)
 
