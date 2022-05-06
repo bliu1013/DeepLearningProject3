@@ -29,8 +29,10 @@ timeseries = []
 Sings = []
 Sings2 = []
 start, end = 0, 27
-#ipd.Audio(data=x[start*sr:end*sr], rate=sr)
-
+"""
+Compute the MFCC of .mp3 file, then take SVD and create matrix of 21 largest singular values
+Mx21 where M is the number of audio files processed.
+"""
 def computeMFCC(Sings,path_to_audio,files,limit):
     for i in range(1,limit):
         if (len(files[0]) ==2):
