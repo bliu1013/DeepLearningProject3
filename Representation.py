@@ -121,17 +121,24 @@ skl.preprocessing.normalize(B, norm='l2')
 
 x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
 #Try w/150ish iter to improve acc
-logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='saga',max_iter = 119)
+logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 119)
 logReg.fit(x_train,y_train)
 
-computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
-Sings2 = np.array(Sings2)
+score = logReg.score(x_test, y_test)
+print(score)
 
-skl.preprocessing.normalize(Sings2, norm='l2')
+while True:
+        text = input("Continue to test? (y/n)\n")
+        if text == 'y':
+            computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
+            Sings2 = np.array(Sings2)
+            skl.preprocessing.normalize(Sings2, norm='l2')
+            predictions = logReg.predict(Sings2)
+            print(predictions)
+            break
+        elif text == 'n':
+            break
 
-predictions = logReg.predict(Sings2)
-
-print(predictions)
 # np.save("foo.csv", test_files, delimiter=",")
 
 # np.save
