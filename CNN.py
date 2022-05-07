@@ -89,6 +89,8 @@ if __name__ == "__main__":
 
     model.add(layers.Conv2D(128, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D())
+    model.add(layers.BatchNormalization())
+
     #model.add(layers.Dense(64, activation='relu'))
     model.add(layers.Flatten())
 
