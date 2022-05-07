@@ -56,6 +56,17 @@ def computeMFCC(Sings,path_to_audio,files,limit):
     return Sings
 
 
+def computeMFCC_Parallel(i,path_to_audio,files):
+        if (len(files[0]) ==2):
+            filename = path_to_audio+ files[i,0]+".mp3"
+        else:
+            filename = path_to_audio+ files[i]+".mp3"
+        x, sr = librosa.load(filename, sr=None, mono=True,duration=29)
+        stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
+        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
+        mfcc = librosa.feature.mfcc(S=librosa.power_to_db(mel))
+        return mfcc
+
 def computeSpec(i,Xs):
     print(files[i])
     filename = "/home/jared/Downloads/project3/train/" + files[i][0]+".mp3"
@@ -114,6 +125,9 @@ def comp_for_SVD(Xs, genre):
 #Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
 #computeSpec(4, Xs1)
 computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
+
+#PARALLEL CALL TO SPEED UP IF NEEDING MFCC AS INPUT
+#Parallel(n_jobs = -1)(delayed(computeMFCC_Parallel)(i,"/home/jared/Downloads/project3/train/") for i in range(1,1201))
 
 Sings = np.array(Sings)
 newlist = [Sings[x][-1] for x in range(len(Sings))]
