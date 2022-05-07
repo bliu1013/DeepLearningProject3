@@ -83,9 +83,9 @@ def computeSpec(i,Xs):
     mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
     log_mel = librosa.amplitude_to_db(mel)
 
-    librosa.display.specshow(log_mel,cmap = 'gray', sr=sr, hop_length=512, x_axis='time')
+    librosa.display.specshow(log_mel,cmap = 'coolwarm', sr=sr, hop_length=512, x_axis='time')
     
-    #plt.savefig('/home/jared/CS429/test_spec/' +str(i)+'.png')
+    plt.savefig('/home/jared/CS429/testimages/' +str(i)+'.png')
     plt.show()
 
 
@@ -122,38 +122,38 @@ def comp_for_SVD(Xs, genre):
     return Xs
 
 #Only run the Parallel job once.
-#Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
+Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,2401))
 #computeSpec(4, Xs1)
-computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
+#computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
 
 #PARALLEL CALL TO SPEED UP IF NEEDING MFCC AS INPUT
 #Parallel(n_jobs = -1)(delayed(computeMFCC_Parallel)(i,"/home/jared/Downloads/project3/train/") for i in range(1,1201))
 
-Sings = np.array(Sings)
-newlist = [Sings[x][-1] for x in range(len(Sings))]
-B = np.delete(Sings, -1, axis=1)
-print(newlist)
-skl.preprocessing.normalize(B, norm='l2')
+# Sings = np.array(Sings)
+# newlist = [Sings[x][-1] for x in range(len(Sings))]
+# B = np.delete(Sings, -1, axis=1)
+# print(newlist)
+# skl.preprocessing.normalize(B, norm='l2')
 
-x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
-#Try w/150ish iter to improve acc
-logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 119)
-logReg.fit(x_train,y_train)
+# x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
+# #Try w/150ish iter to improve acc
+# logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 119)
+# logReg.fit(x_train,y_train)
 
-score = logReg.score(x_test, y_test)
-print(score)
+# score = logReg.score(x_test, y_test)
+# print(score)
 
-while True:
-        text = input("Continue to test? (y/n)\n")
-        if text == 'y':
-            computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
-            Sings2 = np.array(Sings2)
-            skl.preprocessing.normalize(Sings2, norm='l2')
-            predictions = logReg.predict(Sings2)
-            print(predictions)
-            break
-        elif text == 'n':
-            break
+# while True:
+#         text = input("Continue to test? (y/n)\n")
+#         if text == 'y':
+#             computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
+#             Sings2 = np.array(Sings2)
+#             skl.preprocessing.normalize(Sings2, norm='l2')
+#             predictions = logReg.predict(Sings2)
+#             print(predictions)
+#             break
+#         elif text == 'n':
+#             break
 
 # np.save("foo.csv", test_files, delimiter=",")
 
