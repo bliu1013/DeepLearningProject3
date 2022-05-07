@@ -98,8 +98,7 @@ if __name__ == "__main__":
     model.summary()
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
-                  optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.0001),
+                  optimizer='adam',
                   metrics=["accuracy"])   
     
     
