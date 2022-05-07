@@ -84,6 +84,7 @@ if __name__ == "__main__":
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
     model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.Flatten())
     #model.add(layers.Dense(64, activation='relu'))
     model.add(layers.Dense(6, activation='softmax'))
     model.summary()
