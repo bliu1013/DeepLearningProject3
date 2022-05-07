@@ -92,11 +92,9 @@ if __name__ == "__main__":
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.0001),
+    learning_rate=0.01),
                   metrics=["accuracy"])   
     
-    filepath="weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
-    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     
     model.summary()
     
