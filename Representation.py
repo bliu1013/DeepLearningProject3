@@ -29,8 +29,10 @@ timeseries = []
 Sings = []
 Sings2 = []
 start, end = 0, 27
-#ipd.Audio(data=x[start*sr:end*sr], rate=sr)
-
+"""
+Compute the MFCC of .mp3 file, then take SVD and create matrix of 21 largest singular values
+Mx21 where M is the number of audio files processed.
+"""
 def computeMFCC(Sings,path_to_audio,files,limit):
     for i in range(1,limit):
         if (len(files[0]) ==2):
@@ -54,6 +56,17 @@ def computeMFCC(Sings,path_to_audio,files,limit):
     return Sings
 
 
+def computeMFCC_Parallel(i,path_to_audio,files):
+        if (len(files[0]) ==2):
+            filename = path_to_audio+ files[i,0]+".mp3"
+        else:
+            filename = path_to_audio+ files[i]+".mp3"
+        x, sr = librosa.load(filename, sr=None, mono=True,duration=29)
+        stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
+        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
+        mfcc = librosa.feature.mfcc(S=librosa.power_to_db(mel))
+        return mfcc
+
 def computeSpec(i,Xs):
     print(files[i])
     filename = "/home/jared/Downloads/project3/train/" + files[i][0]+".mp3"
@@ -70,9 +83,9 @@ def computeSpec(i,Xs):
     mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
     log_mel = librosa.amplitude_to_db(mel)
 
-    librosa.display.specshow(log_mel,cmap = 'gray', sr=sr, hop_length=512, x_axis='time')
+    librosa.display.specshow(log_mel,cmap = 'coolwarm', sr=sr, hop_length=512, x_axis='time')
     
-    #plt.savefig('/home/jared/CS429/test_spec/' +str(i)+'.png')
+    plt.savefig('/home/jared/CS429/testimages/' +str(i)+'.png')
     plt.show()
 
 
@@ -109,35 +122,38 @@ def comp_for_SVD(Xs, genre):
     return Xs
 
 #Only run the Parallel job once.
-#Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,1201))
+Parallel(n_jobs = -1)(delayed(computeSpec)(i,Xs1) for i in range(1,2401))
 #computeSpec(4, Xs1)
-computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
+#computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
 
-Sings = np.array(Sings)
-newlist = [Sings[x][-1] for x in range(len(Sings))]
-B = np.delete(Sings, -1, axis=1)
-print(newlist)
-skl.preprocessing.normalize(B, norm='l2')
+#PARALLEL CALL TO SPEED UP IF NEEDING MFCC AS INPUT
+#Parallel(n_jobs = -1)(delayed(computeMFCC_Parallel)(i,"/home/jared/Downloads/project3/train/") for i in range(1,1201))
 
-x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
-#Try w/150ish iter to improve acc
-logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 119)
-logReg.fit(x_train,y_train)
+# Sings = np.array(Sings)
+# newlist = [Sings[x][-1] for x in range(len(Sings))]
+# B = np.delete(Sings, -1, axis=1)
+# print(newlist)
+# skl.preprocessing.normalize(B, norm='l2')
 
-score = logReg.score(x_test, y_test)
-print(score)
+# x_train, x_test, y_train, y_test = train_test_split(B, newlist, test_size=0.2, shuffle=True)
+# #Try w/150ish iter to improve acc
+# logReg = skl.linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter = 119)
+# logReg.fit(x_train,y_train)
 
-while True:
-        text = input("Continue to test? (y/n)\n")
-        if text == 'y':
-            computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
-            Sings2 = np.array(Sings2)
-            skl.preprocessing.normalize(Sings2, norm='l2')
-            predictions = logReg.predict(Sings2)
-            print(predictions)
-            break
-        elif text == 'n':
-            break
+# score = logReg.score(x_test, y_test)
+# print(score)
+
+# while True:
+#         text = input("Continue to test? (y/n)\n")
+#         if text == 'y':
+#             computeMFCC(Sings2,"/home/jared/Downloads/project3/test/",test_files,1201)
+#             Sings2 = np.array(Sings2)
+#             skl.preprocessing.normalize(Sings2, norm='l2')
+#             predictions = logReg.predict(Sings2)
+#             print(predictions)
+#             break
+#         elif text == 'n':
+#             break
 
 # np.save("foo.csv", test_files, delimiter=",")
 
