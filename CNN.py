@@ -20,7 +20,6 @@ from tensorflow import keras
 import random
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from skimage import io
-from keras.callbacks import ModelCheckpoint
 import csv
 
 import numpy as np
