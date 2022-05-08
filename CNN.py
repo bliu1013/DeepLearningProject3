@@ -80,7 +80,7 @@ if __name__ == "__main__":
     model = keras.models.Sequential()
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
-    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
 
     model.add(layers.Dense(6, activation='softmax'))
