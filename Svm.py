@@ -13,11 +13,85 @@ from sklearn.datasets import make_blobs
 from tensorflow import keras
 from skimage import io
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import sklearn as skl
+import sklearn.utils, sklearn.preprocessing, sklearn.decomposition, sklearn.svm
+import librosa
+import librosa.display
+from joblib import Parallel,delayed
 
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
+#computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
+def computeMFCC(limit):
+    df=pd.read_csv('train2.csv')
+    identifiers = df['new_id'].tolist()
+    classes = df['genre'].tolist()
+    #print(classes)
+    Sings = []
+    sings_validation = []
+    class_validation = []
+    SingsClasses = []
+    length = 43080
+    for i in range(limit):
+        print("precessing " + str(i))
+        filename = f"train/{str(identifiers[i]).zfill(8)}.mp3"
+        x, sr = librosa.load(filename, sr=None, mono=True, duration=25)
+        stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
+        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
+        mfcc = librosa.feature.mfcc(S=librosa.power_to_db(mel))
+        mfcc = mfcc.flatten()
+        if len(mfcc) > 43080:
+            mfcc = mfcc[0:43080]
+        if len(mfcc) < 43080:
+            print("Warning: mfcc data too small; padding " + str(len(mfcc)))
+            mfcc = mfcc + [0.0]*(43080 - len(mfcc))
+        assert(len(mfcc) == 43080)
+        Sings.append(mfcc)
+        SingsClasses.append(classes[i])
+        # Split data for validation
+        #if i % 5 == 0:
+        #    sings_validation.append(mfcc)
+        #    class_validation.append(classes[i])
+        #else:
+        #    Sings.append(mfcc)
+        #   SingsClasses.append(classes[i])
+    return Sings, SingsClasses, identifiers, class_validation
+        #, sings_validation, class_validation
+
+def computeMFCC_test(limit):
+    df=pd.read_csv('test_idx.csv')
+    identifiers = df['new_id'].tolist()
+    #print(classes)
+    Sings = []
+    length = 43080
+    for i in range(limit):
+        print("precessing " + str(i))
+        filename = f"test/{str(identifiers[i]).zfill(8)}.mp3"
+        x, sr = librosa.load(filename, sr=None, mono=True, duration=25)
+        stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
+        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
+        mfcc = librosa.feature.mfcc(S=librosa.power_to_db(mel))
+        mfcc = mfcc.flatten()
+        if len(mfcc) > 43080:
+            mfcc = mfcc[0:43080]
+        if len(mfcc) < 43080:
+            print("Warning: mfcc data too small; padding " + str(len(mfcc)))
+            fill = np.array([0.0]*(43080 - len(mfcc)))
+            mfcc = np.append(mfcc, fill)
+        assert(len(mfcc) == 43080)
+        Sings.append(mfcc)
+        # Split data for validation
+        #if i % 5 == 0:
+        #    sings_validation.append(mfcc)
+        #    class_validation.append(classes[i])
+        #else:
+        #    Sings.append(mfcc)
+        #   SingsClasses.append(classes[i])
+    return Sings, identifiers
+        #, sings_validation, class_validation
 
 # Read in spectrogram data from pngs
 def get_data_validation():
@@ -130,8 +204,19 @@ def validation_testing(y_predict, y_actual):
 
 
 if __name__ == "__main__":
+    #Code to begin training and testing the svm model with MFCC data
+    #Mfcc, classes, somevalue, othervalue = computeMFCC(2400) #2400
+    #Mfcc, ids = computeMFCC(2400)
+    #clf = svm_train(Mfcc, classes)
+    #validation_x, identifiers = computeMFCC_test(1200) #1200
+    #identifiers = identifiers[:1200]
+    #new_classes = clf.predict(validation_x)
+    #classifier(identifiers, new_classes)
+    #accuracy = validation_testing(new_classes, validation_y)
+    #print(accuracy)
     #Code to begin 5-point cross validation
-    x, x_val, y, y_val = get_data_validation()
+    x, y, x_val, y_val = computeMFCC(2400) #2400
+    #x, x_val, y, y_val = get_data_validation()
     accuracies = []
     for i in range(5):
         fifth = len(x)//5
@@ -154,7 +239,7 @@ if __name__ == "__main__":
             disp.plot()
             plt.show()
 
-    print(average(accuracies))
+    #print(average(accuracies))
     #clf = svm_train(x, y)
     #first_class = clf.predict(x_val)
     #Function to begin valication accuracy
@@ -166,12 +251,3 @@ if __name__ == "__main__":
     #first_class = clf.predict(x_val)
     #classifier(y_val, first_class)
 
-    # spec_array = classify_conf(new_class_matrix, p_v, prob_calcs)
-    # actual = cols_comp
-    # predicted = spec_array
-    # disp_label = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-    # matrix = confusion_matrix(actual,predicted, labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18, 19, 20])
-    # print(matrix)
-    # disp = ConfusionMatrixDisplay(confusion_matrix= matrix, display_labels=disp_label)
-    # disp.plot()
-    # plt.show()
