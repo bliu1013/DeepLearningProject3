@@ -78,15 +78,22 @@ if __name__ == "__main__":
     )
 
     model = keras.models.Sequential()
+    tf.debugging.check_numerics(model, message='Checking inp')
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
+    tf.debugging.check_numerics(model, message='Checking L1')
+
     model.add(layers.BatchNormalization())
+    tf.debugging.check_numerics(model, message='Checking BNorm')
+
     model.add(layers.Flatten())
+    tf.debugging.check_numerics(model, message='Checking Flatten')
+
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.0000001),
+    learning_rate=0.1),
                   metrics=["accuracy"])   
     
     
