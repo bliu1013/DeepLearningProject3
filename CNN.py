@@ -78,7 +78,6 @@ if __name__ == "__main__":
     )
 
     model = keras.models.Sequential()
-    tf.debugging.check_numerics(model, message='Checking inp')
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     tf.debugging.check_numerics(model, message='Checking L1')
