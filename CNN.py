@@ -63,7 +63,7 @@ if __name__ == "__main__":
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=32,
+    batch_size=64,
     class_mode="categorical",
     subset='training',
     shuffle=(True)
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     model.add(layers.MaxPool2D())
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu',activity_regularizer=(tf.keras.regularizers.L2(1e-2))))
     model.add(layers.BatchNormalization())
     model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=1e-13),
+    learning_rate=1e-8),
                   metrics=["accuracy"])   
     
     
