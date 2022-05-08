@@ -88,7 +88,7 @@ if __name__ == "__main__":
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.Adam(
-    learning_rate=1e-8,clipnorm = 1.0),
+    learning_rate=1e-14,clipnorm = 1.0),
                   metrics=["accuracy"])   
     
     
