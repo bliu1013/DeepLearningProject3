@@ -85,12 +85,11 @@ if __name__ == "__main__":
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation='relu'))
 
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
     model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(),
               metrics=['accuracy'])
     
     model.summary()
