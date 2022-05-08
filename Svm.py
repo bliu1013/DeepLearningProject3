@@ -26,6 +26,11 @@ import pandas as pd
 
 #computeMFCC(Sings,"/home/jared/Downloads/project3/train/",files,2401)
 def computeMFCC(limit):
+    """
+    Function to compute ceptral coefficients
+    :param limit: int that is the number of files to use
+    :return: an array of coefficients, one per file. An array of classes, one per file and identifiers
+    """
     df=pd.read_csv('train2.csv')
     identifiers = df['new_id'].tolist()
     classes = df['genre'].tolist()
@@ -62,9 +67,13 @@ def computeMFCC(limit):
         #, sings_validation, class_validation
 
 def computeMFCC_test(limit):
+    """
+    This function computes MFCC coefficients for
+    :param limit:
+    :return:
+    """
     df=pd.read_csv('test_idx.csv')
     identifiers = df['new_id'].tolist()
-    #print(classes)
     Sings = []
     length = 43080
     for i in range(limit):
@@ -83,15 +92,8 @@ def computeMFCC_test(limit):
             mfcc = np.append(mfcc, fill)
         assert(len(mfcc) == 43080)
         Sings.append(mfcc)
-        # Split data for validation
-        #if i % 5 == 0:
-        #    sings_validation.append(mfcc)
-        #    class_validation.append(classes[i])
-        #else:
-        #    Sings.append(mfcc)
-        #   SingsClasses.append(classes[i])
     return Sings, identifiers
-        #, sings_validation, class_validation
+
 
 # Read in spectrogram data from pngs
 def get_data_validation():
@@ -244,7 +246,7 @@ if __name__ == "__main__":
     #first_class = clf.predict(x_val)
     #Function to begin valication accuracy
     #validation_testing(first_class, y_val)
-    #Code to begin classification of testing dataset
+    #Code to begin classification of testing dataset for Spectrogram
     #x, x_val, y, y_val = get_data_validation()
     #x_val, y_val = get_data_test()
     #clf = svm_train(x, y)
