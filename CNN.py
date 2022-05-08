@@ -80,17 +80,16 @@ if __name__ == "__main__":
     model = keras.models.Sequential()
 
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
 
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
-    model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-              metrics=['accuracy'])
+    model.compile(loss="categorical_crossentropy",
+                  optimizer=tf.keras.optimizers.SGD(
+    learning_rate=0.1),
+                  metrics=["accuracy"])   
+    
     
     model.summary()
     
