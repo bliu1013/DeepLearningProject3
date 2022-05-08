@@ -82,6 +82,7 @@ if __name__ == "__main__":
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     model.add(layers.MaxPool2D())
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
     model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=1e-12),
+    learning_rate=1e-13),
                   metrics=["accuracy"])   
     
     
