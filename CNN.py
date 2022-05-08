@@ -72,7 +72,7 @@ if __name__ == "__main__":
     valid_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=32,
+    batch_size=64,
     class_mode="categorical",
     subset='validation'
     )
