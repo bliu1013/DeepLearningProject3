@@ -6,6 +6,7 @@ import random
 
 from tensorflow import keras
 from skimage import io
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,11 +25,11 @@ def get_data():
     random.shuffle(specs)
     for num, i in enumerate(specs):
         print("Reading image", (num))
-        file = f"Spectrograms/{i}.png"
+        file = f"Spectograms(grouped)/{i}.png"
         img = io.imread(file, as_gray=True)
 
         #Get rid of extra pixels
-        img = img[60:426,81:575]
+        img = img[60:426,81:575] / 255.
 
         if i <= 401:
             class_num = 0
@@ -63,15 +64,15 @@ def train(x_data, x_valid, y_data, y_valid):
     model = keras.models.Sequential()
 
     model.add(keras.layers.Flatten(input_shape=[366, 494]))
-    model.add(keras.layers.Dense(1000, activation="relu"))
-    model.add(keras.layers.Dense(500, activation="relu"))
-    model.add(keras.layers.Dense(50, activation="relu"))
+    model.add(keras.layers.Dense(1000, activation="selu"))
+    model.add(keras.layers.Dense(100, activation="selu"))
+    model.add(keras.layers.Dense(10, activation="selu"))
 
     model.add(keras.layers.Dense(6, activation="softmax"))
 
     model.summary()
 
-    optimizer = keras.optimizers.Adam(learning_rate=1e-8)
+    optimizer = keras.optimizers.Adam(learning_rate=1e-5)
     model.compile(loss="sparse_categorical_crossentropy",
                   optimizer=optimizer,
                   metrics=["accuracy"])  
@@ -83,11 +84,22 @@ def train(x_data, x_valid, y_data, y_valid):
     y_valid = np.asarray(y_valid)
 
     #Run
-    history = model.fit(x_data, y_data, epochs=100, validation_data=(x_valid, y_valid))
+    history = model.fit(x_data, y_data, epochs=50, validation_data=(x_valid, y_valid))
+
+    #Save loss function graph
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
     plt.savefig('loss_function.pdf')
+
+    #Create confusion matrix based on validation data
+    y_pred = np.argmax(model.predict(x_valid), axis=-1)
+    matrix = confusion_matrix(y_valid, y_pred, labels=[0, 1, 2, 3, 4, 5])
+    disp_label = [0, 1, 2, 3, 4, 5]
+    disp = ConfusionMatrixDisplay(confusion_matrix= matrix, display_labels=disp_label)
+    disp.plot()
+    plt.show()
+    plt.savefig('CM_NN.pdf')
 
     return model
 
@@ -107,7 +119,7 @@ def test(model):
         print("Testing image", (i))
         file = f"test_spec/{i}.png"
         img = io.imread(file, as_gray=True)
-        img = img[60:426,81:575]
+        img = img[60:426,81:575] / 255.
         x.append(img)
     
     x = np.asarray(x)
