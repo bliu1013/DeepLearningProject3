@@ -152,7 +152,7 @@ logReg.fit(x_train,y_train)
 score = logReg.score(x_test, y_test)
 y_pred = logReg.predict(x_test)
 cf= sklearn.metrics.confusion_matrix(y_test, y_pred)
-sns.heatmap(cf)
+sns.heatmap(cf,annot=True)
 print(score)
 
 while True:
