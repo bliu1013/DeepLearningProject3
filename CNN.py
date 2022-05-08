@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(32, (3, 3), activation='tanh', input_shape=(480, 480, 3)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))
     model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.SGD(
-    learning_rate=0.1),
+    learning_rate=1e-8),
                   metrics=["accuracy"])   
     
     
