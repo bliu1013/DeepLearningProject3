@@ -79,14 +79,14 @@ if __name__ == "__main__":
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(480, 480, 3)))    
+    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(480, 480, 3),kernel_regularizer=(tf.keras.regularizers.L2(1e-3)),activity_regularizer=(tf.keras.regularizers.L2(1e-1))))    
     model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
                   optimizer=tf.keras.optimizers.Adam(
-    learning_rate=1e-10),
+    learning_rate=1e-10,clipnorm =1.0),
                   metrics=["accuracy"])   
     
     
