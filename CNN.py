@@ -62,7 +62,7 @@ if __name__ == "__main__":
     
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
-    target_size = (640,480),
+    target_size = (480,480),
     batch_size=64,
     class_mode="categorical",
     subset='training',
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     valid_ds = train_datagen.flow_from_directory(
     directory="Data/training",
-    target_size = (640,480),
+    target_size = (480,480),
     batch_size=64,
     class_mode="categorical",
     subset='validation'
@@ -79,9 +79,9 @@ if __name__ == "__main__":
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(640, 480, 3)))    
+    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(480, 480, 3),kernel_regularizer=(tf.keras.regularizers.L2(1e-3)),activity_regularizer=(tf.keras.regularizers.L2(1e-1))))    
     model.add(layers.MaxPool2D())
-    model.add(layers.Conv2D(128, (3, 3), activation='relu'))    
+    model.add(layers.Conv2D(128, (3, 3), activation='relu',kernel_regularizer=(tf.keras.regularizers.L2(1e-3)),activity_regularizer=(tf.keras.regularizers.L2(1e-3))))    
     model.add(layers.MaxPool2D())
     model.add(layers.Flatten())
     model.add(layers.Dense(6, activation='softmax'))
