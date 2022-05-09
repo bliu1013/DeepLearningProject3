@@ -63,7 +63,7 @@ if __name__ == "__main__":
     train_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=64,
+    batch_size=32,
     class_mode="categorical",
     subset='training',
     shuffle=(True)
@@ -72,22 +72,21 @@ if __name__ == "__main__":
     valid_ds = train_datagen.flow_from_directory(
     directory="Data/training",
     target_size = (480,480),
-    batch_size=64,
+    batch_size=32,
     class_mode="categorical",
     subset='validation'
     )
 
     model = keras.models.Sequential()
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(480, 480, 3),kernel_regularizer=(tf.keras.regularizers.L2(1e-3)),activity_regularizer=(tf.keras.regularizers.L2(1e-1))))    
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(480, 480, 3)))    
     model.add(layers.MaxPool2D())
-    model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
     model.compile(loss="categorical_crossentropy",
-                  optimizer=tf.keras.optimizers.Adam(
-    learning_rate=1e-10,clipnorm =1.0),
+                  optimizer=tf.keras.optimizers.SGD(
+    learning_rate=1e-8),
                   metrics=["accuracy"])   
     
     
