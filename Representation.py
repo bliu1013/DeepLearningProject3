@@ -128,6 +128,10 @@ if __name__ == "__main__":
 #Conf. matrix
     cf= sklearn.metrics.confusion_matrix(y_test, y_pred)
     sns.heatmap(cf,annot=True)
+    plt.xlabel('Predicted',fontsize=14)
+    plt.ylabel('True',fontsize=14)
+    plt.show()
+    
     print(score)
         #If yes, run prediction on test data
     while True:

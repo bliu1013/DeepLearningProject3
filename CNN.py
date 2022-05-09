@@ -74,7 +74,8 @@ if __name__ == "__main__":
 
     cf=confusion_matrix(predicted_categories, true_categories)
     sns.heatmap(cf,annot=True)
-
+    plt.xlabel('Predicted',fontsize=14)
+    plt.ylabel('True',fontsize=14)
     plt.savefig('CF_CNN','png')
 
     pd.DataFrame(history.history).plot(figsize=(8, 5))
