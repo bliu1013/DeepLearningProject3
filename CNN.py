@@ -39,7 +39,7 @@ if __name__ == "__main__":
     batch_size=32,
     class_mode="categorical",
     subset='training',
-    shuffle=(True)
+    shuffle=(False)
     )
 #Create validation data set from Data directory
     valid_ds = train_datagen.flow_from_directory(
@@ -47,7 +47,8 @@ if __name__ == "__main__":
     target_size = (480,480),
     batch_size=32,
     class_mode="categorical",
-    subset='validation'
+    subset='validation',
+    shuffle=(False)
     )
 
 #Model creation starting with relu activation
@@ -65,8 +66,15 @@ if __name__ == "__main__":
     model.summary()
     #fit model
     history = model.fit(train_ds, epochs=30, validation_data=valid_ds)    
+    y_pred = model.predict(valid_ds)
 
-    
+    predicted_categories = tf.argmax(y_pred, axis=1)
+
+    true_categories = tf.concat([y for x, y in valid_ds], axis=0)
+
+    confusion_matrix(predicted_categories, true_categories)
+    plt.savefig('CF_CNN','png')
+
     pd.DataFrame(history.history).plot(figsize=(8, 5))
     plt.grid(True)
     plt.show()
