@@ -72,7 +72,9 @@ if __name__ == "__main__":
 
     true_categories = tf.concat([y for x, y in valid_ds], axis=0)
 
-    confusion_matrix(predicted_categories, true_categories)
+    cf=confusion_matrix(predicted_categories, true_categories)
+    sns.heatmap(cf,annot=True)
+
     plt.savefig('CF_CNN','png')
 
     pd.DataFrame(history.history).plot(figsize=(8, 5))
