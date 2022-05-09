@@ -29,14 +29,38 @@ For running SVM from the command line in a Linux terminal:
 
 For running NeuralNetworks.py from the command line in a Linux terminal:
 
-* cd into the directory where LogReg.py, "training.csv", "testing.csv" are located (these should all be the same directory with the exact names listed).
+* cd into the directory where NeuralNetwork.py, "train.csv", "train" directory, "test" directory, and "test_idx.csv" are located (these should all be in the same directory with the exact names listed).
 
 * Once in the correct directory, simply type 
-```python LogReg.py``` into the terminal.
+```python NeuralNetwork.py``` into the terminal.
 
-* For Windows, the process is the same, however to run, you will need to enter ```py LogReg.py``` and follow the prompts outlined as above.
+* For Windows, the process is the same, however to run, you will need to enter ```py NeuralNetwork.py``` and follow the prompts outlined as above.
 
 * A second option for running the code on a Linux/UNIX system is, once located in the correct directory, type ``` make run``` into the terminal.
+
+For running CNN.py from the command line in a Linux terminal:
+
+* cd into the directory where LogReg.py, "train.csv", "train" directory, "test" directory, and "test_idx.csv" are located (these should all be in the same directory with the exact names listed).
+
+* Once in the correct directory, simply type 
+```python CNN.py``` into the terminal.
+
+* For Windows, the process is the same, however to run, you will need to enter ```py CNN.py``` and follow the prompts outlined as above.
+
+* A second option for running the code on a Linux/UNIX system is, once located in the correct directory, type ``` make run``` into the terminal.
+
+For running Representation.py from the command line in a Linux terminal:
+*You will be prompted to give paths the you mp3 files and train/test csvs. Verify these paths and that they have appropriate data.
+
+* cd into the directory where Representation.py, "train.csv", "train" directory, "test" directory, and "test_idx.csv" are located (these should all be in the same directory with the exact names listed).
+
+* Once in the correct directory, simply type 
+```python LogReg.py``` into the terminal and respond to prompts.
+
+* For Windows, the process is the same, however to run, you will need to enter ```py Representation.py``` and follow the prompts outlined as above.
+
+* A second option for running the code on a Linux/UNIX system is, once located in the correct directory, type ``` make run``` into the terminal.
+
 
 # Our environment
 ```bash
@@ -48,4 +72,7 @@ scipy.__version__
 1.8.0
 matplotlib.__version__
 3.5.1
-
+Tensorflow.__version__
+2.4.1
+librosa.__version__
+0.9.1
