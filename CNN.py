@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
     model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=(480, 480, 3),kernel_regularizer=(tf.keras.regularizers.L2(1e-3)),activity_regularizer=(tf.keras.regularizers.L2(1e-1))))    
     model.add(layers.MaxPool2D())
+    model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
     model.add(layers.Dense(6, activation='softmax'))
     #model = make((480,480))
